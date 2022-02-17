@@ -1,0 +1,344 @@
+<html>
+
+	<head>
+		<title>Pacman</title>
+		<style>
+		body{
+			margin: auto;
+			background: black;
+		}
+			div.row div{
+				width: 20px;
+				height: 20px;
+				display: inline-block;
+			}
+			div.brick{
+				background-image: url(bricks.png);
+				background-size: contain;
+			}
+			div.coin{
+				background-image: url("coin.gif");
+				background-size: contain;
+			}
+
+			div.cherry{
+				background: url("cherry.png");
+				background-size: contain;
+			}
+			
+			#pacman{
+				background-color: red;
+				width: 20px;
+				height: 20px;
+				top: 20px;
+				left: 20px;
+				position: absolute;
+				background: url("pacman.gif");
+				background-size: contain;
+			}
+			#ghost{
+				width: 20px;
+				height: 20px;
+				position: absolute;
+				background: url("ghost.gif");
+				background-size: contain;
+			}
+			#ghost1{
+				width: 20px;
+				height: 20px;
+				position: absolute;
+				background: url("ghost1.gif");
+				background-size: contain;
+			}
+			#ghost2{
+				width: 20px;
+				height: 20px;
+				position: absolute;
+				background: url("ghost2.gif");
+				background-size: contain;
+			}
+			#score{
+				border: 1px solid white;
+				width: 100px;
+				height: 75px;
+				color: white;
+				padding: 7px;
+				text-align: center;
+				position: absolute;
+				top: 20px;
+				left: 1220px;
+				font-size: 50px;
+			}
+			#arrWorld{
+				background-color: black;
+			}
+
+		</style>
+	</head>
+	
+	<body>
+		<div id="arrWorld"></div>
+		<div id="pacman"></div>
+		<div id ='ghost'></div>
+		<div id ='ghost1'></div>
+		<div id ='ghost2'></div>
+		<div id ='score'>score</div>
+
+		<script>
+		    var arr = [
+				[
+				[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+				[2,0,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,2,1,1,1,2],
+				[2,2,2,2,2,2,1,2,1,1,2,2,2,2,2,1,2,2,2,2,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,2,1,2,2,2,2,1,2,2,2,1,2,1,2,1,2,1,2],
+				[2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,2,2,2,1,1,1,1,1,1,1,1,1,2,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,1,2,1,2,1,2],
+				[2,1,2,2,2,2,2,2,2,2,2,2,1,1,1,2,1,1,1,1,2,2,2,2,1,1,1,2,1,1,1,2,2,0,2,2,1,2,2,1,1,2,2,1,2,2,1,2,2,2,2,2,1,2,1,2,2,2,1,2],
+				[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,2],
+				[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
+				],
+                [
+				[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+				[2,0,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,2,2,1,1,2,2,1,1,2,1,1,1,1,1,1,2,2,1,1,2,2,1,1,1,1,1,1,1,1,1,2,1,2],
+				[2,1,1,1,2,1,1,2,1,1,1,2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,2,1,1,2,2,1,1,2,2,1,2,2,1,1,2,1,2,1,2,2,1,2,2,1,1,1,1,2],
+				[2,1,1,1,2,1,1,2,2,2,1,2,2,1,1,1,2,2,1,2,2,1,2,2,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,2,1,2,2,1,2,1,1,1,2,1,2],
+				[2,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,2,2,1,2,2,2,2,0,2,2,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2,1,2,2,1,1,2],
+				[2,1,2,1,1,1,2,2,2,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,2,2,1,2,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],
+				[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
+				],
+				[
+				[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+				[2,0,2,1,1,1,2,1,1,1,2,1,2,1,1,1,1,1,1,1,2,1,2,1,1,1,2,1,1,1,2,1,1,2,1,1,2,1,1,2,1,1,1,2,1,1,1,1,1,1,2,1,2,1,2,1,1,2,1,2],
+				[2,1,2,1,2,1,2,1,2,1,2,1,2,1,1,1,2,1,2,1,1,1,1,1,1,1,2,1,2,1,2,1,1,1,1,1,2,1,1,2,1,1,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2],
+				[2,1,2,1,2,1,2,1,2,1,1,1,1,1,1,1,2,1,1,1,2,1,2,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2,1,1,2,1,2,1,1,1,1,2],
+				[2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,1,1,1,1,1,1,1,1,1,2,2,0,2,2,1,2,1,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1,2,1,2,1,1,2],
+				[2,1,1,1,2,1,1,1,1,1,2,1,1,1,2,1,2,1,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,2,1,1,1,2,1,2,1,2,1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2],
+				[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
+				],
+				[
+				[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+				[2,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2],
+				[2,2,2,2,2,2,2,2,1,1,2,2,2,1,1,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,1,2,1,1,2,2,2,2,1,2,2,1,1,2,2,1,2,1,2,2,2,2,2,2,1,2,2,2,2],
+				[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+				[2,1,2,2,2,1,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,1,2,2,2,2,1,2,2,2,2,0,2,2,2,1,1,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,1,2,2,1,1,2],
+				[2,1,1,2,1,1,1,1,1,2,1,2,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,2,1,1,2,2,1,1,1,2,1,1,2,2,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,2,2,1,1,2],
+				[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
+				],
+				[            
+				[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+				[2,0,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,2,2,1,1,2,2,1,1,2,1,1,1,1,1,1,2,2,1,1,2,2,1,1,1,1,1,1,1,1,1,2,1,2],
+				[2,1,1,1,2,1,1,2,1,1,1,2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,2,2,1,2,2,1,1,2,1,2,1,2,2,1,2,2,1,1,1,1,2],
+				[2,1,1,1,2,1,1,2,2,2,1,2,2,1,1,1,2,2,1,2,2,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,2,1,2,2,1,2,1,1,1,2,1,2],
+				[2,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,2,2,1,1,1,2,2,0,2,2,2,2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2,1,2,2,1,1,2],
+				[2,1,2,1,1,1,2,2,2,1,1,1,1,2,2,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,2,2,1,2,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],
+				[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
+				],
+          ];
+			var move = {
+				x: 1,
+				y: 1,
+				ghostX: 33, // x coordinate position for ghost 
+				ghostY: 5,  // y coordinate position for ghost
+				ghost1X: 12, // x coordinate position for ghost 1 
+				ghost1Y: 5, // y coordinate position for ghost 1 
+				ghost2X: 50, // x coordinate position for ghost 2
+				ghost2Y: 5 // y coordinate position for ghost 2
+			};
+
+			var score =0;
+			var speed = 1000;
+			do{
+				var randWorld = Math.floor(Math.random()*10);
+			}
+			while(randWorld >= arr.length);;
+
+			function settingValueOf3(){//Function for Random Cherry
+			var x = 0;
+				do{
+					var randomX = Math.floor(Math.random()*60);
+					var randomY = Math.floor(Math.random()*7);
+						if (arr[randWorld][randomY][randomX]!=2){
+						arr[randWorld][randomY][randomX] = 3;
+						x++;
+						}
+				}while(x<5)
+				 world();
+			}
+			function world(){ //Function to show different world 
+				var items = "";
+				for(var i=0; i<arr[randWorld].length; i++){
+					items +="<div class ='row'>";
+						for(var j=0; j<arr[randWorld][i].length; j++){
+							if(arr[randWorld][i][j] == 2){
+								items +="<div class ='brick'></div>";
+							}
+							else if(arr[randWorld][i][j] == 1){
+								items+="<div class ='coin'></div>";
+							}
+							else if(arr[randWorld][i][j] == 3){
+								items+="<div class ='cherry'></div>";
+							}
+							else if(arr[randWorld][i][j] == 0){
+								items+="<div class ='empty'></div>";
+							}
+							else if(arr[randWorld][i][j] == 4){
+								items+="<div class ='ghost'></div>";
+							}
+						}
+					items+="</div>";
+				}
+			  document.getElementById('arrWorld').innerHTML = items;
+			}
+			function ghost(){
+				document.getElementById("ghost").style.top = (move.ghostY*20)+"px" ;
+				document.getElementById("ghost").style.left = (move.ghostX*20)+"px";
+			}//Update position for ghost
+		
+			function ghostPath(){
+				var randomX = Math.floor(Math.random()*4);
+				if(randomX == 0 && arr[randWorld][move.ghostY][move.ghostX-1]!=2){
+					move.ghostX--;					
+				}//move to left
+				else if(randomX == 2 && arr[randWorld][move.ghostY-1][move.ghostX]!=2){
+				  	move.ghostY--;
+				}//move to top
+				else if(randomX == 3 && arr[randWorld][move.ghostY+1][move.ghostX]!=2){
+						move.ghostY++;
+				} //move to bottom
+				else if(randomX == 1 && arr[randWorld][move.ghostY][move.ghostX+1]!=2){
+					move.ghostX++;
+				}//move to right
+				world();
+				ghost();
+				collision();
+			}
+
+			function ghost1(){
+				document.getElementById("ghost1").style.top = (move.ghost1Y*20)+"px" ;
+				document.getElementById("ghost1").style.left = (move.ghost1X*20)+"px";
+			}//update position for ghost 1
+
+			function ghost1Path(){
+				var randomX = Math.floor(Math.random()*4);
+
+				if(randomX == 0 && arr[randWorld][move.ghost1Y][move.ghost1X-1]!=2){
+					move.ghost1X--;	
+				}//move to Left
+				if(randomX == 2 && arr[randWorld][move.ghost1Y-1][move.ghost1X]!=2){
+				  	move.ghost1Y--;
+				}//move to Bottom
+				if(randomX == 3 && arr[randWorld][move.ghost1Y+1][move.ghost1X]!=2){
+					move.ghost1Y++;
+				}//move to right
+				if(randomX == 1 && arr[randWorld][move.ghost1Y][move.ghost1X+1]!=2){
+					move.ghost1X++;
+				}//move to Top		
+				world();
+				ghost1();
+				collision();
+			}
+
+			function ghost2(){
+				document.getElementById("ghost2").style.top = (move.ghost2Y*20)+"px" ;
+				document.getElementById("ghost2").style.left = (move.ghost2X*20)+"px";
+			}//update position for ghost 2
+
+			function ghost2Path(){
+				var randomX = Math.floor(Math.random()*4);
+
+				if(randomX == 0 && arr[randWorld][move.ghost2Y][move.ghost2X-1]!=2){
+					move.ghost2X--;	
+				}//move to Left
+				if(randomX == 2 && arr[randWorld][move.ghost2Y-1][move.ghost2X]!=2){
+				  	move.ghost2Y--;
+				}//move to Bottom
+				if(randomX == 3 && arr[randWorld][move.ghost2Y+1][move.ghost2X]!=2){
+					move.ghost2Y++;
+				}//move to right
+				if(randomX == 1 && arr[randWorld][move.ghost2Y][move.ghost2X+1]!=2){
+					move.ghost2X++;
+				}//move to Top
+				world();
+				ghost2();
+				collision();
+			}
+
+
+			function displayScore(){
+				document.getElementById("score").innerHTML = score;
+			}//Display Score
+
+			function collision(){
+				if( move.y == move.ghostY && move.x == move.ghostX ||
+					move.y == move.ghost1Y && move.x == move.ghost1X ||
+				    move.y == move.ghost2Y && move.x == move.ghost2X){
+						var randWorld2 = Math.floor(Math.random()*5);
+						randWorld = randWorld2;
+					  	move.y =1;
+					  	move.x =1;
+					for (var m =0; m<arr.length; m++){
+						for(var i=0; i<arr[m].length; i++){
+							for(var j=0; j<arr[m][i].length; j++){
+								console.log("before " +arr[m][i][j]);
+								if(arr[m][i][j] == 0 || arr[m][i][j] == 3){
+								   arr[m][i][j] = 1;
+
+								}
+							}
+						}
+					}settingValueOf3();
+					 score =0;
+				} 
+				  world();
+			}//Detect collsion
+
+
+			function gameloop(){
+				ghostPath();
+				ghost1Path();
+				ghost2Path();
+			}setInterval(gameloop, 100);
+
+
+			function pacman(){
+				document.getElementById("pacman").style.top = move.y*20+"px";
+				document.getElementById("pacman").style.left = move.x*20+"px";
+				collision();
+			}
+
+			document.onkeydown = function (e){
+				if(e.keyCode == 37 && arr[randWorld][move.y][move.x-1]!=2){//move left
+					move.x--;
+				}
+				else if(e.keyCode == 39 && arr[randWorld][move.y][move.x+1]!=2){//move right
+					move.x++;
+				}
+				else if(e.keyCode == 38 && arr[randWorld][move.y-1][move.x]!=2){//move top
+					move.y--;
+				}
+				else if(e.keyCode == 40 && arr[randWorld][move.y+1][move.x]!=2){//move down
+					move.y++;
+				}
+				
+				if(arr[randWorld][move.y][move.x]==1){
+					arr[randWorld][move.y][move.x] = 0;
+					score += 5;
+				}
+				else if(arr[randWorld][move.y][move.x]==3){
+					arr[randWorld][move.y][move.x] = 0;
+					score += 20;
+				}
+				world();
+				pacman();
+				displayScore();	
+			}
+
+			settingValueOf3();
+			world();
+			ghostPath();
+			ghost1Path();
+			ghost2Path();
+			collision();
+			pacman();
+			displayScore();
+		</script>
+	</body>
+</html>
